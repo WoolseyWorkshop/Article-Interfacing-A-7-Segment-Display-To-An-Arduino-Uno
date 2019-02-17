@@ -6,8 +6,8 @@
 // reset to 0 when a button is pressed.
 //
 // Circuit:
-// Momentary push button connected to pin 2.
-// Common anode 7-segment display connected through 74LS47 IC to pins 3-6.
+// Momentary push button connected to pin D2.
+// Common anode 7-segment display connected through 74LS47 IC to pins D3-D6.
 //
 // Created by John Woolsey on 01/30/2019.
 // Copyright © 2019 Woolsey Workshop.  All rights reserved.
@@ -22,7 +22,8 @@ const byte bcdD   = 6;  // binary coded decimal (BCD) most significant bit (MSB)
 
 
 // Global Variables
-byte count = 0;  // display counter
+unsigned long lastTimeButtonPressed = 0;  // used for debouncing button
+byte count = 0;                           // display counter
 
 
 void setup() {
@@ -54,8 +55,12 @@ void loop() {
 
 // Resets counter and display to 0
 void resetCount() {
-   count = 0;        // reset counter
-   displayWrite(0);  // reset display
+   unsigned long currentTimeButtonPressed = millis();  // get current time
+   if (currentTimeButtonPressed - lastTimeButtonPressed > 250) {  // allow for button debounce time of 250 ms
+      lastTimeButtonPressed = currentTimeButtonPressed;
+      count = 0;        // reset counter
+      displayWrite(0);  // reset display
+   }
 }
 
 
